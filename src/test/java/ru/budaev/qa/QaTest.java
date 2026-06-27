@@ -1,5 +1,6 @@
 package ru.budaev.qa;
 
+import com.codeborne.selenide.ClickOptions;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SetValueMethod;
@@ -23,23 +24,31 @@ public class QaTest {
          * 5. нажать на кнопку "Стоимость"
          * 6. нажать на кнопку "Вкатиться в QA"
          * 7. нажать на кнопку "Бегу оплачивать"
-         * 8. проверить, что к оплате 47 00р
+         * 8. проверить, что к оплате 47 000р
          * */
+        Configuration.browser = "chrome"; // выбор браузера
+        Configuration.pageLoadTimeout = 200000; // таймаут прогрузки страниц
+        Configuration.timeout = 200000; // таймаут прогрузки элементов
+
         Configuration.holdBrowserOpen = true;
         open("https://ya.ru/");
-        $("#text").setValue("bulgakov qa");
+        $("#text").setValue("bulgakov qa"); //яндекс поиск
         $("[type=submit]").click();
         $(".DistributionButtonClose").click();
+
+         // поисковая выдача
         $(byText("ivanbulgakovqa.ru")).click();
+
         sleep(3000);
         switchTo().window(1);
-        $$(".t-menu__list li").last().click(); //xpath
-        $x("/html/body/div[1]/div[42]/div/div/div[32]/div/a").click();
+        $$(".t-menu__list li").last().click(); // welcome страница обучения
+        $x("/html/body/div[1]/div[42]/div/div/div[32]/div/a").click(); // xpath
         $(byText("Бегу оплачивать")).click();
 
         switchTo().window(2);
-        $(".styles-module-scss-module__t92_WG__price").$("h3").shouldHave(text("₽ 47 000.00 "));
-        //$(byText("₽ 47 000.00 ")).click();
+        $(".styles-module-scss-module__kWKzya__price").shouldHave(text("₽ 47 000.00 "));
+        // страница оплаты
+
     }
 
 
