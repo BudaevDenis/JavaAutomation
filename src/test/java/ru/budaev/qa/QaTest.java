@@ -36,8 +36,8 @@ public class QaTest {
         $("[type=submit]").click();
         $(".DistributionButtonClose").click();
 
-         // поисковая выдача
-        $(byText("ivanbulgakovqa.ru")).click();
+
+        $(byText("ivanbulgakovqa.ru")).click();  // поисковая выдача
 
         sleep(3000);
         switchTo().window(1);
