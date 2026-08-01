@@ -1,7 +1,10 @@
 package ru.budaev.qa;
 
 import com.codeborne.selenide.Configuration;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import ru.budaev.pages.Config;
 import ru.budaev.pages.YandexSearchPage;
 import ru.budaev.pages.YandexSearchResultPage;
 
@@ -14,18 +17,12 @@ public class QaTest {
     private Object open;
 
     @Test
+    @DisplayName("Проверить, что цена обучения 47000 руб")
+    @Tag("POSITIVE")
     void mentoringPriceTest() {
+        Config.setup();
 
-        Configuration.browser = "chrome"; // выбор браузера
-        Configuration.pageLoadTimeout = 100000; // таймаут прогрузки страниц
-        Configuration.timeout = 100000; // таймаут прогрузки элементов-
-        Configuration.holdBrowserOpen = true;
-
-        YandexSearchPage yaSearch = new YandexSearchPage();
-        YandexSearchResultPage yaSearchResults = new YandexSearchResultPage();
-
-        open("https://ya.ru/");
-        yaSearch
+        open("https://ya.ru/", YandexSearchPage.class)
                 .search("bulgakov qa")
                 .submit()
                 .closeDefaultBrowserSelectWindow()
@@ -33,7 +30,6 @@ public class QaTest {
                 .clickPrice()
                 .clickPayButton()
                 .verifyPrice("₽ 47 000.00 ");
-
     }
 
 
