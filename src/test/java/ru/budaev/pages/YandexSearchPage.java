@@ -3,28 +3,19 @@ package ru.budaev.pages;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
 
-public class YandexSearchPage {
+public class YandexSearchPage extends BasePage {
     private final SelenideElement searchInput = $("#text");
-    private final SelenideElement submitButton = $("[type=submit]");
-
-    public YandexSearchPage openYandexSearch() {
-        open("https://ya.ru/");
-
-        return this;
-    }
 
     public YandexSearchPage search(String query) {
-        searchInput.setValue(query); //яндекс поиск
+        searchInput.setValue(query);
 
         return this;
     }
 
-    public YandexSearchResultPage submit() {
-        submitButton.click();
+    public YandexSearchResultsPage submit() {
+        searchInput.pressEnter();
 
-
-        return new YandexSearchResultPage();
+        return new YandexSearchResultsPage();
     }
 }
