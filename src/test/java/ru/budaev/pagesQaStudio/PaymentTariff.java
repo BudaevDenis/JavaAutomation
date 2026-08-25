@@ -20,6 +20,7 @@ public class PaymentTariff {
 
     public PaymentTariff submitPay() {
 
+
         submitPay.click();
 
         return this;
