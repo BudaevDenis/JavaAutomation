@@ -1,51 +1,63 @@
 package ru.budaev.qa;
 
-import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import ru.budaev.pages.Config;
 import ru.budaev.pages.YandexSearchPage;
-import ru.budaev.pagesQaStudio.SearchPage;
+import ru.budaev.pages.bulgakov.ResultCostPage;
+import ru.budaev.pages.bulgakov.WelcomePage;
+import ru.budaev.pages.qastudio.CoursesPage;
+import ru.budaev.pages.qastudio.TariffPaymentPage;
 
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.open;
 
-public class QaTest {
-    private Object open;
+public class QaTest extends BaseTest {
 
     @Test
-    @DisplayName("Проверить, что цена обучения 47000 руб")
-    @Tag("POSITIVE")
-    void mentoringPriceTest() {
-        Config.setup();
+    @DisplayName("Проверить, что цена обучения 47 000 руб")
+    @Tag("positive")
+    void mentoringPriceShouldBe47000Test() {
         open("https://ya.ru/", YandexSearchPage.class)
                 .search("bulgakov qa")
                 .submit()
-                .closeDefaultBrowserSelectWindow()
+                .closeDefaultBrowserBannerIfAppeared()
+                .closeDistributionBannerIfAppeared()
                 .openLink("ivanbulgakovqa.ru")
-                .clickPrice()
-                .clickPayButton()
-                .verifyPrice("₽ 47 000.00 ");
+
+                // сайт открылся новой вкладкой
+                .switchToWindow(1, WelcomePage.class)
+                .openStudySection()
+                .clickWantToQa()
+                .clickRunToPay()
+
+                // оплата открылась ещё одной вкладкой
+                .switchToWindow(2, ResultCostPage.class)
+                .checkPriceAmount("47 000");
     }
 
+    @Test
+    @DisplayName("Запись на курс QA Studio, тариф Джуниор")
+    @Tag("positive")
+    void signUpForJuniorTariffTest() {
+        open("https://ya.ru/", YandexSearchPage.class)
+                .search("manual qa studio")
+                .submit()
+                .closeDefaultBrowserBannerIfAppeared()
+                .closeDistributionBannerIfAppeared()
+                .openLink("manual.qa.studio")
 
-   @Test
-   @DisplayName("Запись на курс QaStudio, тариф Джуниор")
-   @Tag("POSITIVE")
-   void myHomeTestNostalgy() {
+                // сайт открылся новой вкладкой
+                .switchToWindow(1, CoursesPage.class)
+                .openSignUpSection()
+                .clickPayForTariff("Джуниор")
 
-       Config.setup();
-        open("https://ya.ru/", SearchPage.class)
-                .searchQaStudio("manual qa studio")
-                .submitButton()
-                .closeButtonBrowser()
-                .openLinkQaStudio("manual.qa.studio")
-                .submitSignUp("Записаться на курс")
-                .submitPaymentPage()
-                .clickPayTariffJunior("Тариф Джуниор")
-                .inputEmail("deniskoss@yandex.ru")
-                .submitPay();
+                // оплата открылась ещё одной вкладкой
+                .switchToWindow(2, TariffPaymentPage.class)
+                .selectTariff("Тариф Джуниор")
+                .fillEmail("deniskoss@yandex.ru")
+
+                // до кнопки оплаты доходим, но не жмём: это боевой платёж
+                .checkEmail("deniskoss@yandex.ru")
+                .checkPayButtonIsReady();
     }
-    }
+}
